@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Signature Forgery Detector</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="dashboard">
+        <h1>Signature Forgery Detector</h1>
+        <p>Upload two signatures to verify authenticity.</p>
+        <a href="/logout" class="logout-btn">Sign Out</a>
+
+        <form id="upload-form">
+            <div class="upload-boxes">
+                <div>
+                    <label>Original Signature</label>
+                    <input type="file" id="image1" name="image1" accept="image/*" required>
+                </div>
+                <div>
+                    <label>Test Signature</label>
+                    <input type="file" id="image2" name="image2" accept="image/*" required>
+                </div>
+            </div>
+            <button type="submit">Detect Forgery</button>
+        </form>
+
+        <div id="result"></div>
+    </div>
+
+    <script>
+        document.getElementById("upload-form").addEventListener("submit", async function(event) {
+            event.preventDefault();
+
+            const formData = new FormData();
+            formData.append("image1", document.getElementById("image1").files[0]);
+            formData.append("image2", document.getElementById("image2").files[0]);
+
+            const response = await fetch("/", {
+                method: "POST",
+                body: formData
+            });
+
+            const result = await response.json();
+            document.getElementById("result").innerHTML = `<h2>${result.result}</h2>`;
+        });
+    </script>
+</body>
+</html>
